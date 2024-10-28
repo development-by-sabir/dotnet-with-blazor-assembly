@@ -1,0 +1,21 @@
+﻿@using BSMSShared.DTO
+@using BSMSystemClient.Services
+@inject BookStoreGraphQLService BookStoreService
+
+<h3>Books</h3>
+
+<ul>
+    @foreach (var book in books)
+    {
+        <li>@book.Title by @book.AuthorId</li>
+    }
+</ul>
+
+@code {
+    private List<BookDto> books = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        //books = await BookStoreService.GetBooksAsync();
+    }
+}

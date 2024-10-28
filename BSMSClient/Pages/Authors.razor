@@ -1,0 +1,65 @@
+﻿@page "/authors"
+@using BSMSShared.DTO
+@using BSMSClient.Services
+@inject BookStoreGraphQLService BookStoreService
+@inject NavigationManager NavigationManager
+
+<h3>Authors</h3>
+
+@if (authors == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Action</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var author in authors)
+            {
+                <tr>
+                    <td>@author.Name</td>
+                    <td>
+                        <button class="btn-light" @onclick="() => EditAuthor(author.Id)">Edit</button>
+                    </td>
+                    <td>
+                        <button class="btn-danger" @onclick="() => DeleteAuthor(author.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button class="btn-outline-primary" @onclick="AddAuthor">Add Author</button>
+}
+
+@code {
+    private List<AuthorDto> authors = new List<AuthorDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        authors = await BookStoreService.GetAuthorsAsync();
+    }
+
+    private async Task DeleteAuthor(int id)
+    {
+        await BookStoreService.DeleteAuthorAsync(id);
+        authors = await BookStoreService.GetAuthorsAsync();
+    }
+
+    private async Task EditAuthor(int id)
+    {
+        NavigationManager.NavigateTo($"/edit-author?id={id}");
+    }
+
+    private async Task AddAuthor()
+    {
+        NavigationManager.NavigateTo("/add-author");
+    }
+}

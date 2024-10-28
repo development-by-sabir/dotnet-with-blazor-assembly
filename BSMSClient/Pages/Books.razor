@@ -1,0 +1,69 @@
+﻿@page "/books"
+@using BSMSShared.DTO
+@using BSMSClient.Services
+@inject BookStoreGraphQLService BookStoreService
+@inject NavigationManager NavigationManager
+
+<h3>Books</h3>
+
+@if (books == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Author</th>
+                <th>Action</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in books)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Price</td>
+                    <td>@book.Author.Name</td>
+                    <td>
+                        <button class="btn-light" @onclick="() => EditBook(book.Id)">Edit</button>
+                    </td>
+                    <td>
+                        <button class="btn-danger" @onclick="() => DeleteBook(book.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button class="btn-outline-primary" @onclick="AddBook">Add Book</button>
+}
+
+@code {
+    private List<BookDto> books = new List<BookDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        books = await BookStoreService.GetBooksAsync();
+    }
+
+    private async Task DeleteBook(int id)
+    {
+        await BookStoreService.DeleteBookAsync(id);
+        books = await BookStoreService.GetBooksAsync();
+    }
+
+    private async Task EditBook(int id)
+    {
+        NavigationManager.NavigateTo($"/edit-book?id={id}");
+    }
+
+    private async Task AddBook()
+    {
+        NavigationManager.NavigateTo("/add-book");
+    }
+}

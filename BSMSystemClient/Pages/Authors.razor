@@ -1,0 +1,54 @@
+﻿@page "/authors"
+@using BSMSShared.DTO
+@using BSMSystemClient.Services
+@inject BookStoreGraphQLService BookStoreService
+
+<h3>Authors</h3>
+
+@if (authors == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Author Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var author in authors)
+            {
+                <tr>
+                    <td>@author.Name</td>
+                    <td>
+                        <button @onclick="() => EditAuthor(author)">Edit</button>
+                    </td>
+                    <td>
+                        <button @onclick="() => DeleteAuthor(author.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<AuthorDto> authors;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authors = await BookStoreService.GetAuthorsAsync();
+    }
+
+    private async Task DeleteAuthor(int id)
+    {
+        
+    }
+
+    private async Task EditAuthor(AuthorDto author)
+    {
+
+    }
+}

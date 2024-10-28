@@ -1,0 +1,20 @@
+﻿@page "/add-author"
+@using BSMSClient.Services
+@using BSMSShared.DTO
+@inject BookStoreGraphQLService BookStoreService
+@inject NavigationManager NavigationManager
+
+
+<h3>Add Author</h3>
+<input @bind="author.Name" placeholder="Author Name" />
+<button class="btn-primary" @onclick="AddNewAuthor">Add</button>
+
+@code {
+    private AuthorDto author = new AuthorDto();
+
+    private async Task AddNewAuthor()
+    {
+        await BookStoreService.AddAuthorAsync(author);
+        NavigationManager.NavigateTo("/authors");
+    }
+}

@@ -1,0 +1,32 @@
+﻿@page "/edit-author"
+@using BSMSShared.DTO
+@using BSMSClient.Services
+@inject BookStoreGraphQLService BookStoreService
+@inject NavigationManager NavigationManager
+
+
+<h3>Update Author</h3>
+<input @bind="author.Name" placeholder="Author Name" />
+<button class="btn-primary" @onclick="UpdateAuthor">Update</button>
+
+@code {
+    private AuthorDto author = new AuthorDto();
+
+    private async Task UpdateAuthor()
+    {
+        await BookStoreService.UpdateAuthorAsync(author);
+        NavigationManager.NavigateTo("/authors");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        if (int.TryParse(query["id"], out var id))
+        {
+            var _author = await BookStoreService.GetAuthorByIdAsync(id);
+            if(_author != null)
+                author = _author;
+        }
+    }
+}
